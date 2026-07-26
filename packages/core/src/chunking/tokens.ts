@@ -41,7 +41,7 @@ export function splitSentences(text: string): string[] {
     .replace(ABBREVIATIONS, `$1${DOT}`)
 
   const parts = masked
-    .split(/(?<=[.!?])[ \t]+(?=[A-Z(\[])/)
+    .split(/(?<=[.!?])[ \t]+(?=[A-Z([])/)
     .map((s) => s.split(DOT).join('.').trim())
     .filter((s) => s.length > 0)
 

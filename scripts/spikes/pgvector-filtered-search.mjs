@@ -26,7 +26,7 @@
  * Requires Docker. Starts and removes its own container.
  */
 
-import { execSync, spawnSync } from 'node:child_process'
+import { execSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, resolve } from 'node:path'
