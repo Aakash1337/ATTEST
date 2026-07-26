@@ -133,8 +133,14 @@ PENDING ──▶ IN_PROGRESS ──┬──▶ ANSWERED
 ```
 PENDING ──┬──▶ APPROVED
           ├──▶ REJECTED
-          └──▶ EDITED ──▶ APPROVED
+          └──▶ EDITED ──┬──▶ APPROVED
+                        └──▶ REJECTED
 ```
+
+`EDITED → REJECTED` is deliberate. Editing and approving are separate acts, frequently by
+separate people: a responder rewrites an answer, and the approver then decides it is
+unsalvageable. Without this edge the only route to rejection would be for the approver to
+revert the edit first, which destroys the feedback record of what was attempted.
 
 Only items in `ANSWERED` or `GAP` are reviewable. Every transition writes a feedback record
 with actor, timestamp, and before/after text.

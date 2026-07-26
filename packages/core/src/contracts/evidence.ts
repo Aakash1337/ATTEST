@@ -106,13 +106,13 @@ export function renderForContext(citationId: string, e: Evidence): string {
     const page = e.page === null ? '' : ` page="${e.page}"`
     return (
       `<evidence id="${citationId}" kind="DOCUMENT" doc="${escapeAttr(e.documentTitle)}" ` +
-      `section="${escapeAttr(section)}"${page}>\n${e.quote}\n</evidence>`
+      `section="${escapeAttr(section)}"${page}>\n${escapeBody(e.quote)}\n</evidence>`
     )
   }
   return (
     `<evidence id="${citationId}" kind="LIVE_OBSERVATION" source="${e.source}" ` +
     `check="${escapeAttr(e.check)}" observedAt="${e.observedAt}">\n` +
-    `${e.renderedText}\n</evidence>`
+    `${escapeBody(e.renderedText)}\n</evidence>`
   )
 }
 
@@ -154,4 +154,20 @@ export function citationFromEvidence(citationId: string, e: Evidence): Citation 
 
 function escapeAttr(s: string): string {
   return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;')
+}
+
+/**
+ * Escape the FENCE BODY, not just the attributes.
+ *
+ * Escaping attributes alone does not hold the boundary: a document containing a literal
+ * `</evidence>` in its text would terminate the element early and the remaining
+ * untrusted corpus text would appear OUTSIDE the fenced data channel, where the model
+ * may read it as instruction. The ingest-time screener does not reject XML-like
+ * delimiters and should not be relied on for this — the fence must be self-defending.
+ *
+ * `&` is escaped first so an input already containing `&lt;` cannot be decoded back into
+ * a live `<` by the model.
+ */
+function escapeBody(s: string): string {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;')
 }

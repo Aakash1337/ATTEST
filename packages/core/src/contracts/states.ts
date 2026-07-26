@@ -67,6 +67,11 @@ export const ITEM_TRANSITIONS: TransitionMap<ItemStatus> = {
   FAILED_UPSTREAM: [],
 }
 
+/**
+ * EDITED -> REJECTED is intentional (docs/14-contracts.md §3.5): editing and approving
+ * are separate acts, often by separate people. Without that edge an approver could only
+ * reject by first reverting the edit, destroying the record of what was attempted.
+ */
 export const REVIEW_TRANSITIONS: TransitionMap<ReviewState> = {
   PENDING: ['APPROVED', 'REJECTED', 'EDITED'],
   EDITED: ['APPROVED', 'REJECTED'],

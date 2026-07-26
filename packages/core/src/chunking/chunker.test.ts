@@ -199,6 +199,66 @@ describe('chunker — tables (D5: table-only answers)', () => {
   })
 })
 
+describe('chunker — hard ceiling on lists (review P2)', () => {
+  it('splits an oversized list at item boundaries, not just sentences', () => {
+    // Items with NO terminal punctuation: a sentence splitter sees one huge "sentence".
+    const items = Array.from(
+      { length: 300 },
+      (_, i) => `- Control requirement ${i} covering access review and retention duties`,
+    ).join('\n')
+    const chunks = chunkBlocks(parseMarkdown(`# Doc\n\n## Controls\n\n${items}\n`))
+
+    expect(chunks.length).toBeGreaterThan(1)
+    for (const c of chunks) {
+      expect(c.tokenCount).toBeLessThanOrEqual(DEFAULT_CHUNKER_OPTIONS.hardCeiling * 1.2)
+    }
+  })
+
+  it('keeps each bullet intact when splitting a list', () => {
+    const items = Array.from(
+      { length: 300 },
+      (_, i) => `- Control requirement ${i} covering access review and retention duties`,
+    ).join('\n')
+    const chunks = chunkBlocks(parseMarkdown(`# Doc\n\n## Controls\n\n${items}\n`))
+    const bullets = chunks.flatMap((c) => c.text.split('\n')).filter((l) => l.startsWith('- '))
+    // No bullet was severed mid-line.
+    for (const b of bullets) {
+      expect(b).toMatch(/^- Control requirement \d+ covering access review and retention duties$/)
+    }
+  })
+})
+
+describe('chunker — page attribution (review P2)', () => {
+  const paged = (page: number, text: string) => ({
+    text,
+    headingPath: ['Policy', '4. Access'],
+    page,
+    kind: 'paragraph' as const,
+    depth: 2,
+  })
+
+  it('attributes each chunk to its own page, not the section start', () => {
+    // One heading spanning three PDF pages, sized so packing splits it.
+    const blocks = [
+      paged(10, paragraphOf(30, 0)),
+      paged(11, paragraphOf(30, 40)),
+      paged(12, paragraphOf(30, 80)),
+    ]
+    const chunks = chunkBlocks(blocks)
+    const observed = [...new Set(chunks.map((c) => c.page))]
+
+    expect(chunks.length).toBeGreaterThan(1)
+    // Before the fix every chunk reported page 10.
+    expect(observed.length).toBeGreaterThan(1)
+    expect(observed).not.toEqual([10])
+  })
+
+  it('reports null when the source has no pagination (markdown)', () => {
+    const chunks = chunkBlocks(parseMarkdown(`# Doc\n\n## S\n\n${paragraphOf(10)}\n`))
+    expect(chunks.every((c) => c.page === null)).toBe(true)
+  })
+})
+
 describe('token estimation', () => {
   it('is monotonic in length', () => {
     expect(estimateTokens('a b c')).toBeLessThan(estimateTokens(paragraphOf(3)))

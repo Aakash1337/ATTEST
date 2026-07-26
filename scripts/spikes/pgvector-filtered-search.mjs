@@ -156,8 +156,9 @@ async function seed(client) {
   const forbiddenTag = 'restricted'
   const queryVec = seededVector(1)
 
-  const docId = '11111111-1111-1111-1111-111111111111'
-  const dvId = '22222222-2222-2222-2222-222222222222'
+  // Prefixed ULIDs per docs/14-contracts.md §1 — the schema CHECKs enforce the format.
+  const docId = `doc_01J${'0'.repeat(22)}1`
+  const dvId = `dv_01J${'0'.repeat(22)}2`
 
   await client.query(`SET attest.tenant_id = '${tenantId}'`)
   await client.query(
@@ -216,7 +217,7 @@ async function seed(client) {
        FROM (VALUES ${slice
          .map((_, j) => {
            const b = j * 8
-           return `($${b + 1}::uuid,$${b + 2}::uuid,$${b + 3}::text,$${b + 4}::int,$${b + 5}::text[],$${b + 6}::text[],$${b + 7}::text,$${b + 8}::vector)`
+           return `($${b + 1}::text,$${b + 2}::text,$${b + 3}::text,$${b + 4}::int,$${b + 5}::text[],$${b + 6}::text[],$${b + 7}::text,$${b + 8}::vector)`
          })
          .join(',')}) AS v(chunk_id, dv, t, ord, acl, hp, raw, emb)`,
       params,
@@ -235,9 +236,18 @@ async function seed(client) {
   return { queryVec, permittedTag }
 }
 
+const CROCKFORD = '0123456789ABCDEFGHJKMNPQRSTVWXYZ'
+
+/** Deterministic, format-valid chunk ULID for the spike corpus. */
 function uuidFor(i) {
-  const h = i.toString(16).padStart(12, '0')
-  return `33333333-3333-4333-8333-${h}`
+  let n = i
+  let suffix = ''
+  for (let k = 0; k < 10; k++) {
+    suffix = CROCKFORD[n % 32] + suffix
+    n = Math.floor(n / 32)
+  }
+  // 3 + 13 + 10 = 26 chars, Crockford base32 (no I, L, O, U).
+  return `chk_01J${'0'.repeat(13)}${suffix}`
 }
 
 const FILTERED_SQL = `
