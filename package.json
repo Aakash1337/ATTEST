@@ -1,0 +1,34 @@
+{
+  "name": "attest",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Evidence-backed answers, or no answer at all.",
+  "engines": {
+    "node": ">=22"
+  },
+  "workspaces": [
+    "packages/core",
+    "packages/adapters",
+    "packages/functions",
+    "packages/infra"
+  ],
+  "scripts": {
+    "build": "tsc --build",
+    "typecheck": "tsc --build --force",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint .",
+    "ci:checks": "node scripts/ci/run-all.mjs",
+    "spike:pgvector": "node scripts/spikes/pgvector-filtered-search.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@typescript-eslint/eslint-plugin": "^8.18.0",
+    "@typescript-eslint/parser": "^8.18.0",
+    "eslint": "^9.17.0",
+    "pg": "^8.22.0",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}
