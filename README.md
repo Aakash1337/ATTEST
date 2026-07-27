@@ -14,6 +14,11 @@ defined mapping, not a vague promise — see
 
 ## Start here
 
+**New to this codebase — including if you specified it but didn't type it?**
+Start with **[learn/README.md](learn/README.md)**. A six-session guided path through the code,
+with break-it exercises and interview drills. Do that before reading the docs below; the docs are
+reference material and reading them front-to-back builds vocabulary without understanding.
+
 | If you want to know… | Read |
 |---|---|
 | What this is, what it does, and when it ships | [docs/00-OVERVIEW.md](docs/00-OVERVIEW.md) |
