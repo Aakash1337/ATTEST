@@ -1,0 +1,19 @@
+{
+  "name": "@attest/core",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Pure domain logic. ZERO AWS imports — enforced by scripts/ci/check-core-no-aws.mjs",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./contracts": "./dist/contracts/index.js"
+  },
+  "scripts": {
+    "build": "tsc --build"
+  },
+  "dependencies": {
+    "zod": "^3.24.1"
+  }
+}
