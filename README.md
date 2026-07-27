@@ -60,10 +60,9 @@ Pre-build, rebaselined v2 after external review. No code yet.
 
 - **Budget:** 140 hours at 10 h/week over 14 weeks (2026-07-27 → 2026-11-01)
 - **Done means:** the nine release gates in [docs/11-delivery-plan.md §6](docs/11-delivery-plan.md)
-- The original single-file plan is at [ATTEST-project-plan.md](ATTEST-project-plan.md) and the
-  review that prompted v2 is at
-  [feedback of the current plan.md](feedback%20of%20the%20current%20plan.md). The `docs/` set
-  supersedes both.
+- **Built so far:** contracts, Postgres schema + RLS, structure-aware chunker, injection
+  screening, the Northwind corpus, and three CI guards. 118 tests. Nothing is deployed —
+  retrieval queries, embedding, the agent loop and the API are specified but not yet written.
 
 ## Non-negotiables
 

@@ -1,6 +1,6 @@
 # 01 — Product Specification
 
-**Status:** Revised v2 · **Supersedes:** `ATTEST-project-plan.md` §2
+**Status:** Revised v2
 **Enums and state machines:** [14-contracts.md](14-contracts.md) is normative; this document
 references but does not define them.
 
